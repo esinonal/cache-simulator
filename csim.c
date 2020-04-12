@@ -4,16 +4,12 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-//load= Reads
-//M=  read, then write
-//store=  write
 
 //Step0: make our parameters for hit, miss, evictions so we can increment them along way.
 int hits=0;
 int misses=0;
 int evictions=0;
 int globalClock=0;
-
 
 typedef struct theline {
   int valid;
@@ -24,8 +20,6 @@ typedef struct theline {
 typedef struct theset {
   line * lines;
 }set;
-
-
 
 void accessCache(unsigned long long tagnum, long setnum, int numLines, set* cache, int s){
 
@@ -43,7 +37,6 @@ void accessCache(unsigned long long tagnum, long setnum, int numLines, set* cach
   currentSet= &cache[setnum];
   currentLine= &((*currentSet).lines[0]);
 
-
   for (int i=0; i<numLines; i++){ //Go through all the lines in the set.
     if ((*currentSet).lines[i].tag == tagnum){
       tagmatch=1;
@@ -59,7 +52,6 @@ void accessCache(unsigned long long tagnum, long setnum, int numLines, set* cach
     (*currentLine).time= globalClock; //Say when we accessed the line.
   }
   else {
-
     found=0;
     for(int i=0; i<numLines; i++){
       if((*currentSet).lines[i].valid == 0){
@@ -72,7 +64,6 @@ void accessCache(unsigned long long tagnum, long setnum, int numLines, set* cach
       (*currentLine).valid=1;
       (*currentLine).tag=tagnum;
       (*currentLine).time=globalClock;
-
     }
     else if (found==0){ //Case3: we have to evict.
       misses= misses+1;
@@ -94,9 +85,7 @@ void accessCache(unsigned long long tagnum, long setnum, int numLines, set* cach
       (*currentLine).time=globalClock;
     }
   }
-
 }
-
 
 void dealWithInstruction(char* string, set* cache, int s, int e, int b){
   if (string[0]!= 'I'){
@@ -114,7 +103,6 @@ void dealWithInstruction(char* string, set* cache, int s, int e, int b){
     mask= mask-1;
     unsigned long long tagnum= ((address>>b)>>s) & mask;
 
-
     long tagAndSetMask= (-1 << b);
     long splusb= s+b;
     long setAndBMask= (pow(2,splusb)-1);
@@ -124,24 +112,19 @@ void dealWithInstruction(char* string, set* cache, int s, int e, int b){
 
     int numLines= e;
 
-
     //Step1: deal with the item
     if ((mode == 'L')||(mode == 'S')){ //LOAD/STORE_____________________________
 
       accessCache(tagnum, setnum, numLines, cache, s);
-
     }
     if (mode == 'M'){ //MODIFY_________________________________________________
       accessCache(tagnum, setnum, numLines, cache, s);
       accessCache(tagnum, setnum, numLines, cache, s);
     }
-
-
   }
 }
 
 int main(int argc, char *argv[]){
-
 
   //Step1: Read the given arguments
   int s;
@@ -172,10 +155,8 @@ int main(int argc, char *argv[]){
       cache[i].lines[j].tag = 0;
       cache[i].lines[j].time = 0;
       cache[i].lines[j].valid = 0;
-
     }
   }
-
 
   //Step3: Read the file and put read it into cache line by line.
   FILE *fptr;
@@ -187,14 +168,10 @@ int main(int argc, char *argv[]){
 
   char string[100];
   while (fgets(string, sizeof(string), fptr) != 0){
-
     dealWithInstruction(string, cache, s, e, b);
     globalClock++;
   }
-  
   printSummary(hits, misses, evictions);
-
-
 
   return 0;
 }
