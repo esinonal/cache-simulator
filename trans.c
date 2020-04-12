@@ -33,14 +33,7 @@ void transpose_submit(int M, int N, int A[N][M], int B[M][N]){
         else if ((M==64)&&(N==64)){
           func3(M, N, A, B);
         }
-
 }
-
-
-
-
-
-
 
 /*
  * You can define additional transpose functions below. We've defined
@@ -114,7 +107,6 @@ void func2(int M, int N, int A[N][M], int B[M][N]){
       for (int jj = 0; jj < M; jj += 4) {
         for (int ii = i; ii< i+8; ii++ ){
 
-
           var1= A[ii][jj];
           var2= A[ii][jj+1];
           var3= A[ii][jj+2];
@@ -154,7 +146,6 @@ void func3(int M, int N, int A[N][M], int B[M][N]){
     }
 }
 
-
 /*
  * registerFunctions - This function registers your transpose
  *     functions with the driver.  At runtime, the driver will
@@ -165,15 +156,12 @@ void func3(int M, int N, int A[N][M], int B[M][N]){
 void registerFunctions()
 {
     /* Register any additional transpose functions */
-
     registerTransFunction(func1, func1char);
     registerTransFunction(func2, func2char);
     registerTransFunction(trans, trans_desc);
     registerTransFunction(func3, func3char);
     registerTransFunction(transpose_submit,transpose_submit_desc);
-
 }
-
 
 /*
  * is_transpose - This helper function checks if B is the transpose of
